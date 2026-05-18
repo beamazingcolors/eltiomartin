@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazing Colors | Elite Ocean Journeys</title>
+    
+    <link rel="icon" type="image/png" href="image_0.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #000000; 
+            --brand-blue: #04263a; 
+            --accent: #bd5307;  
+            --light: #0cb5d6;   
+            --white: #ffffff;
+            --pearl-bg: #f7f5f0;   
+            --gradient: linear-gradient(135deg, #f5841a 0%, #ffb347 100%);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: var(--primary-dark); color: var(--white); font-family: 'Montserrat', sans-serif; line-height: 1.6; overflow-x: hidden; }
+
+        /* LIENZO DE ORBES GLOBAL (Fijo en pantalla, transparente e interactivo) */
+        #smokeCanvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 99999;
+            pointer-events: none; 
+        }
+
+        /* 1. PANTALLA DE INICIO CINEMATOGRÁFICA */
+        #welcome-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-color: #000000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 9998;
+            overflow: hidden;
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), opacity 1.2s ease;
+            touch-action: none; 
+        }
+
+        #welcome-screen.dismissed {
+            transform: translateY(-100vh);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .vignette-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, transparent 20%, rgba(0, 0, 0, 0.4) 60%, #000000 95%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 5;
+            max-width: 950px;
+            padding: 0 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .welcome-content img {
+            width: 260px;
+            max-width: 75vw;
+            margin-bottom: 35px;
+            filter: drop-shadow(0 4px 15px rgba(0,0,0,0.6));
+        }
+
+        .welcome-tag {
+            font-size: 0.9rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--light);
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .welcome-subtitle {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            font-weight: 400;
+            color: #b3bdc7;
+            letter-spacing: 1px;
+            margin-bottom: 50px;
+            max-width: 700px;
+        }
+
+        .welcome-btn {
+            background-color: var(--accent);
+            color: var(--white);
+            border: 1px solid #ff9132;
+            padding: 18px 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 50px;
+            cursor: pointer;
+            position: relative;
+            z-index: 100000;
+            transition: all 0.4s ease;
+            font-family: 'Montserrat', sans-serif;
+            box-shadow: 0 0 25px rgba(12, 181, 214, 0.4);
+        }
+
+        .welcome-btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 35px rgba(12, 181, 214, 0.75);
+        }
+
+        /* 2. INTERFAZ PRINCIPAL (CATÁLOGO ESTILO PERLADO) */
+        #main-site-wrapper {
+            opacity: 0;
+            background-color: var(--pearl-bg);
+            color: var(--brand-blue);
+            transition: opacity 1s ease 0.5s;
+            min-height: 100vh;
+        }
+        
+        #main-site-wrapper.visible {
+            opacity: 1;
+        }
+
+        .site-brand-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 15px 25px 15px;
+            cursor: pointer;
+            background: var(--pearl-bg);
+            width: 100%; 
+            text-align: center;
+        }
+
+        .site-brand-header span {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(1.5rem, 5.5vw, 2.4rem); 
+            letter-spacing: 6px;
+            margin-right: -6px; 
+            text-transform: uppercase;
+            color: var(--brand-blue);
+            font-weight: 700;
+            display: inline-block;
+            width: 100%;
+            transition: color 0.3s ease;
+        }
+
+        .site-brand-header:hover span { color: #f5841a; }
+
+        .nav-bar { 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            background: rgba(247, 245, 240, 0.96); 
+            backdrop-filter: blur(10px); 
+            padding: 20px 0; 
+            border-bottom: 1px solid rgba(4, 38, 58, 0.08); 
+            display: flex; 
+            justify-content: center; 
+            gap: 30px; 
+        }
+        
+        .nav-btn { 
+            background: none; 
+            border: none; 
+            color: var(--brand-blue); 
+            font-size: 0.85rem; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            cursor: pointer; 
+            opacity: 0.6; 
+            font-weight: 600;
+            transition: 0.3s all;
+        }
+        
+        .nav-btn.active { opacity: 1; color: #f5841a; border-bottom: 2px solid #f5841a; }
+
+        #catalog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; padding: 40px 5%; max-width: 1600px; margin: 0 auto; }
+        
+        .card { 
+            background: #ffffff; 
+            border: 1px solid rgba(4, 38, 58, 0.06); 
+            border-radius: 8px; 
+            overflow: hidden; 
+            transition: 0.4s; 
+            opacity: 0; 
+            transform: translateY(20px); 
+            cursor: pointer; 
+            box-shadow: 0 4px 15px rgba(4, 38, 58, 0.03);
+        }
+        
+        .card.visible { opacity: 1; transform: translateY(0); }
+        .card:hover { border-color: #f5841a; transform: scale(1.02); box-shadow: 0 12px 25px rgba(4, 38, 58, 0.1); }
+        
+        .img-container { width: 100%; height: 280px; position: relative; background: var(--brand-blue); overflow: hidden; }
+        .card img { width: 100%; height: 100%; object-fit: cover; display: block; position: relative; z-index: 1; }
+
+        .card-info { padding: 20px; }
+        .card-title { font-family: 'Cinzel', serif; font-size: 1.4rem; color: var(--brand-blue); font-weight: 600; }
+        .card-price { color: #f5841a; font-weight: 600; font-size: 1rem; }
+
+        /* MODAL */
+        #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(4, 38, 58, 0.4); backdrop-filter: blur(15px); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 15px; }
+        .modal-content { background: var(--white); width: 100%; max-width: 1000px; max-height: 90vh; overflow-y: auto; border-radius: 12px; position: relative; }
+        .modal-close { position: absolute; top: 15px; right: 20px; font-size: 2.2rem; color: var(--brand-blue); cursor: pointer; z-index: 10; }
+        .modal-grid { display: grid; grid-template-columns: 1fr 1fr; }
+        .modal-gallery { background: var(--brand-blue); min-height: 350px; overflow: hidden; }
+        .modal-details { padding: 40px; color: #333; }
+        .modal-title { font-family: 'Cinzel', serif; font-size: 2.2rem; color: var(--brand-blue); font-weight: 700; }
+        .btn-wa { display: block; text-align: center; background: var(--gradient); color: var(--white); text-decoration: none; padding: 18px; font-weight: 700; text-transform: uppercase; margin-top: 30px; border-radius: 6px; box-shadow: 0 4px 15px rgba(245, 132, 26, 0.35); transition: 0.3s all; }
+        .btn-wa:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245, 132, 26, 0.5); }
+
+        #lightbox-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 3000; cursor: zoom-out; }
+        #lightbox-overlay img { max-width: 95%; max-height: 95vh; object-fit: contain; }
+        
+        @media (max-width: 800px) { .modal-grid { grid-template-columns: 1fr; } .modal-details { padding: 30px; } .img-container { height: 240px; } }
+    </style>
+</head>
+<body>
+
+    <canvas id="smokeCanvas"></canvas>
+
+    <div id="welcome-screen">
+        <div class="vignette-overlay"></div>
+        <div class="welcome-content">
+            <img id="main-brand-logo" src="image_0.png" alt="El Tío Martin Logo - Tours y Yates">
+            <span class="welcome-tag">Mensaje de Bienvenida</span>
+            <p class="welcome-subtitle">Explora nuestras experiencias exclusivas y comienza tu viaje inolvidable.</p>
+            <button class="welcome-btn" onclick="startExperience()">Comencemos la experiencia</button>
+        </div>
+    </div>
+
+    <div id="main-site-wrapper">
+        <div class="site-brand-header" onclick="backToWelcome()">
+            <span>Amazing Colors</span>
+        </div>
+
+        <nav class="nav-bar">
+            <button id="btnTour" class="nav-btn active" onclick="filter('tour')">Experiencias</button>
+            <button id="btnYate" class="nav-btn" onclick="filter('yate')">Nuestra Flota</button>
+        </nav>
+
+        <main id="catalog-grid"></main>
+    </div>
+
+    <div id="modal-overlay" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div id="modal-body" class="modal-grid"></div>
+        </div>
+    </div>
+
+    <div id="lightbox-overlay" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" alt="Vista Completa">
+    </div>
+
+    <script>
+        const TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1kHXC7SHi1lC-_kTh9h8wbtPLPkpYB5jQ-eoF3Zcko92chHcX1LNW7gi6b5VGTXBIsvyJgITnFcFj/pub?output=tsv';
+        const GITHUB_RAW = 'https://raw.githubusercontent.com/beamazingcolors/amazingcolors/main/';
+
+        let fullData = [];
+        let isMainSiteActive = false;
+
+        function startExperience() {
+            document.getElementById('welcome-screen').classList.add('dismissed');
+            document.getElementById('main-site-wrapper').classList.add('visible');
+            isMainSiteActive = true;
+        }
+
+        function backToWelcome() {
+            document.getElementById('welcome-screen').classList.remove('dismissed');
+            document.getElementById('main-site-wrapper').classList.remove('visible');
+            isMainSiteActive = false;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* MOTOR DE RENDIMIENTO DE HUMO */
+        const canvas = document.getElementById('smokeCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const BRAND_COLORS = ['4, 38, 58', '12, 181, 214', '245, 132, 26', '189, 21, 124'];
+
+        class SmokeParticle {
+            constructor(isFromMouse = false, mouseX = 0, mouseY = 0) {
+                this.isMouse = isFromMouse;
+                if (this.isMouse) {
+                    this.x = mouseX + (Math.random() - 0.5) * 4;  
+                    this.y = mouseY + (Math.random() - 0.5) * 4;
+                    this.size = Math.random() * 4 + 1.5;         
+                    this.growth = -(Math.random() * 0.04 + 0.02); 
+                    this.speedY = -(Math.random() * 1.2 + 0.6);   
+                    this.speedX = (Math.random() - 0.5) * 1.2;   
+                    this.alpha = 1;                              
+                    this.decay = Math.random() * 0.015 + 0.012;   
+                    this.colorFormat = 'white';                  
+                } else {
+                    this.resetAmbient();
+                    this.y = Math.random() * canvas.height;
+                }
+            }
+
+            resetAmbient() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 80;
+                this.size = Math.random() * 160 + 90;
+                this.growth = 0;
+                this.speedY = -(Math.random() * 2.8 + 1.8);
+                this.speedX = Math.sin(Math.random() * 2) * 1.6;
+                this.alpha = 0;
+                this.maxAlpha = Math.random() * 0.14 + 0.05;
+                this.decay = 0;
+                this.colorFormat = 'rgb';
+                this.color = BRAND_COLORS[Math.floor(Math.random() * BRAND_COLORS.length)];
+            }
+
+            update() {
+                if (this.isMouse) {
+                    this.x += this.speedX; 
+                    this.y += this.speedY; 
+                    this.size += this.growth; 
+                    this.alpha -= this.decay;
+                    if (this.size < 0.1) this.size = 0.1;
+                } else {
+                    this.y += this.speedY; this.x += this.speedX + Math.sin(this.y / 25) * 0.8; 
+                    if (this.y < canvas.height * 0.4) { this.alpha -= 0.006; } else if (this.alpha < this.maxAlpha) { this.alpha += 0.009; }
+                }
+            }
+
+            draw() {
+                if (this.alpha <= 0 || this.size <= 0.1) return;
+                ctx.save();
+                ctx.globalCompositeOperation = 'source-over'; 
+                
+                const gradient = ctx.createRadialGradient(this.x, this.y, 0.2, this.x, this.y, this.size);
+                let colorBase = this.colorFormat === 'white' ? `rgba(255, 255, 255, ` : `rgba(${this.color}, `;
+                
+                gradient.addColorStop(0, colorBase + `${this.alpha})`);
+                gradient.addColorStop(0.3, colorBase + `${this.alpha * 0.6})`);
+                gradient.addColorStop(1, colorBase + '0)');
+                
+                ctx.fillStyle = gradient; 
+                ctx.beginPath(); 
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); 
+                ctx.fill(); 
+                ctx.restore();
+            }
+        }
+
+        for (let i = 0; i < 40; i++) { particles.push(new SmokeParticle(false)); }
+        
+        window.addEventListener('mousemove', (e) => {
+            for (let i = 0; i < 3; i++) { particles.push(new SmokeParticle(true, e.clientX, e.clientY)); }
+        });
+        
+        window.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0];
+            for (let i = 0; i < 2; i++) { particles.push(new SmokeParticle(true, touch.clientX, touch.clientY)); }
+        }, { passive: true });
+
+        function animateSmoke() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                if (!particles[i].isMouse && isMainSiteActive) { particles[i].alpha = 0; }
+                particles[i].draw();
+                if (particles[i].isMouse) { 
+                    if (particles[i].alpha <= 0 || particles[i].size <= 0.1) { particles.splice(i, 1); } 
+                } 
+                else { 
+                    if (particles[i].y + particles[i].size < 0 || particles[i].alpha <= 0) { particles[i].resetAmbient(); } 
+                }
+            }
+            requestAnimationFrame(animateSmoke);
+        }
+        animateSmoke();
+
+        /* LÓGICA DE DATOS */
+        function getCleanValue(item, possibleHeaders) {
+            if (!item) return '';
+            for (let originalKey in item) {
+                let normalizedKey = originalKey.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+                for (let header of possibleHeaders) {
+                    let normalizedHeader = header.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+                    if (normalizedKey === normalizedHeader) {
+                        let val = item[originalKey]?.trim();
+                        if (!val || val.toLowerCase() === 'undefined' || val.toLowerCase() === 'null') return '';
+                        return val;
+                    }
+                }
+            }
+            return '';
+        }
+
+        function getImgUrlByCodigo(codigoValue) {
+            if (!codigoValue || codigoValue === '') return '';
+            let fileName = codigoValue.trim();
+            if (!fileName.toLowerCase().endsWith('.jpg') && !fileName.toLowerCase().endsWith('.jpeg') && !fileName.toLowerCase().endsWith('.png')) {
+                fileName += '.jpg';
+            }
+            return GITHUB_RAW + encodeURIComponent(fileName);
+        }
+
+        async function init() {
+            try {
+                const response = await fetch(TSV_URL);
+                const text = await response.text();
+                const rows = text.replace(/\r/g, '').split('\n').filter(r => r.trim() !== '').map(r => r.split('\t'));
+                const headers = rows[0].map(h => h.trim());
+                fullData = rows.slice(1).map(row => {
+                    let item = {}; headers.forEach((h, i) => { item[h] = row[i]?.trim(); }); return item;
+                });
+                filter('tour');
+            } catch (err) { console.error(err); }
+        }
+
+        function filter(category) {
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.toggle('active', btn.innerText.toLowerCase().includes(category === 'tour' ? 'exp' : 'flota')));
+            const grid = document.getElementById('catalog-grid'); grid.innerHTML = '';
+            const filtered = fullData.filter(item => getCleanValue(item, ['TIPO', 'Tipo']).toLowerCase().includes(category.toLowerCase()));
+            filtered.forEach((item, idx) => {
+                const card = document.createElement('div'); card.className = 'card';
+                let nombre = getCleanValue(item, ['Nombre', 'NOMBRE']);
+                card.onclick = () => openModal(nombre);
+                let codigo = getCleanValue(item, ['Codigo', 'Código', 'CDG']);
+                let imgUrl = getImgUrlByCodigo(codigo);
+                let pies = getCleanValue(item, ['Pies', 'PIES']);
+                let precio = getCleanValue(item, ['Precio', 'PRECIO']) || 'Experiencias';
+                
+                card.innerHTML = `
+                    <div class="img-container">
+                        ${imgUrl ? `<img src="${imgUrl}" onerror="this.style.opacity='0';">` : ''}
+                    </div>
+                    <div class="card-info">
+                        <span style="color:var(--light); font-size:0.75rem; font-weight:600; letter-spacing:2px; text-transform:uppercase;">${pies ? pies + ' Pies' : 'Premium'}</span>
+                        <h2 class="card-title">${nombre}</h2>
+                        <p class="card-price">${precio}</p>
+                    </div>
+                `;
+                grid.appendChild(card); setTimeout(() => card.classList.add('visible'), idx * 80);
+            });
+        }
+
+        function openModal(nombreBusqueda) {
+            const item = fullData.find(i => getCleanValue(i, ['Nombre', 'NOMBRE']) === nombreBusqueda);
+            const body = document.getElementById('modal-body');
+            let nombre = getCleanValue(item, ['Nombre', 'NOMBRE']);
+            let precio = getCleanValue(item, ['Precio', 'PRECIO']) || 'Experiencias';
+            let desc = getCleanValue(item, ['Descriptivo', 'Detalles']) || 'Ficha técnica premium disponible.';
+            let codigo = getCleanValue(item, ['Codigo', 'Código', 'CDG']);
+            let imgUrl = getImgUrlByCodigo(codigo);
+            
+            body.innerHTML = `
+                <div class="modal-gallery">
+                    ${imgUrl ? `<img src="${imgUrl}" onclick="openLightbox('${imgUrl}')" style="width:100%; height:100%; object-fit:cover; display:block; cursor:zoom-in;">` : ''}
+                </div>
+                <div class="modal-details">
+                    <h1 class="modal-title">${nombre}</h1>
+                    <p class="card-price" style="font-size:1.6rem;">${precio}</p>
+                    <p style="font-size:0.9rem; color:#444; margin-top:15px; line-height:1.7;">${desc}</p>
+                    <a href="https://wa.me/qr/E7L3TUMGUTJTF1" target="_blank" class="btn-wa">Reservar ahora</a>
+                </div>
+            `;
+            document.getElementById('modal-overlay').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; document.body.style.overflow = 'auto'; }
+        function openLightbox(src) { document.getElementById('lightbox-img').src = src; document.getElementById('lightbox-overlay').style.display = 'flex'; }
+        function closeLightbox() { document.getElementById('lightbox-overlay').style.display = 'none'; }
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') { closeModal(); closeLightbox(); }
+        });
+
+        init();
+    </script>
+</body>
+</html>
