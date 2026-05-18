@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>El Tío Martin | Tours & Yates de Élite</title>
     
-    <link rel="icon" type="image/png" href="image_0.png">
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/beamazingcolors/eltiomartin/main/HRR.png">
     
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -23,7 +23,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background-color: var(--bg-parchment); color: var(--text-dark); font-family: 'Montserrat', sans-serif; line-height: 1.6; overflow-x: hidden; }
 
-        /* LIENZO DE PARTÍCULAS BLANCAS GLOBAL (Estilo brisa marina translúcida) */
+        /* LIENZO DE PARTÍCULAS BLANCAS GLOBAL */
         #smokeCanvas {
             position: fixed;
             top: 0; left: 0;
@@ -37,7 +37,6 @@
             position: fixed;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            /* Degradado radial que simula iluminación sobre un mapa pergamino antiguo */
             background: radial-gradient(circle, var(--bg-parchment) 20%, var(--bg-sand-dark) 70%, #bca777 100%);
             display: flex;
             flex-direction: column;
@@ -59,7 +58,6 @@
         .vignette-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            /* Marco difuminado estilo viñeta antigua */
             background: radial-gradient(circle at center, transparent 30%, rgba(110, 95, 57, 0.2) 70%, rgba(4, 38, 58, 0.4) 100%);
             z-index: 2;
             pointer-events: none;
@@ -73,7 +71,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* Marco sutil interior simulando un documento antiguo */
             border: 1px dashed rgba(4, 38, 58, 0.25);
             margin: 20px;
             border-radius: 4px;
@@ -129,7 +126,7 @@
             box-shadow: 0 15px 35px rgba(4, 38, 58, 0.3);
         }
 
-        /* 2. INTERFAZ PRINCIPAL (CATÁLOGO ESTILO EXCLUSIVO) */
+        /* 2. INTERFAZ PRINCIPAL */
         #main-site-wrapper {
             opacity: 0;
             background-color: var(--bg-parchment);
@@ -158,7 +155,7 @@
             font-family: 'Cinzel', serif;
             font-size: clamp(1.8rem, 6vw, 2.8rem); 
             letter-spacing: 8px;
-            margin-right: -8px; 
+            margin-right: -6px; 
             text-transform: uppercase;
             color: var(--brand-navy);
             font-weight: 700;
@@ -171,7 +168,6 @@
             transform: scale(1.02);
         }
 
-        /* BARRA DE NAVEGACIÓN ESTILO BITÁCORA */
         .nav-bar { 
             position: sticky; 
             top: 0; 
@@ -207,7 +203,6 @@
             border-bottom: 2px solid var(--accent-rope); 
         }
 
-        /* REJILLA DE TARJETAS */
         #catalog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 35px; padding: 50px 6%; max-width: 1600px; margin: 0 auto; }
         
         .card { 
@@ -223,7 +218,6 @@
         }
         
         .card.visible { opacity: 1; transform: translateY(0); }
-        
         .card:hover { 
             border-color: var(--accent-gold); 
             transform: translateY(-5px); 
@@ -238,7 +232,7 @@
         .card-title { font-family: 'Cinzel', serif; font-size: 1.35rem; color: var(--brand-navy); font-weight: 700; letter-spacing: 1px; margin-bottom: 5px; }
         .card-price { color: var(--accent-rope); font-weight: 700; font-size: 1.05rem; letter-spacing: 0.5px; }
 
-        /* MODAL / DISEÑO DE ALTA GAMA */
+        /* MODAL */
         #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(4, 38, 58, 0.5); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 20px; }
         .modal-content { background: var(--white); width: 100%; max-width: 1050px; max-height: 85vh; overflow-y: auto; border-radius: 6px; position: relative; border: 1px solid var(--accent-gold); box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
         .modal-close { position: absolute; top: 15px; right: 20px; font-size: 2.5rem; color: var(--brand-navy); cursor: pointer; z-index: 10; opacity: 0.7; transition: 0.3s; }
@@ -276,7 +270,7 @@
         #lightbox-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(4, 38, 58, 0.97); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 3000; cursor: zoom-out; }
         #lightbox-overlay img { max-width: 90%; max-height: 90vh; border: 2px solid var(--accent-gold); border-radius: 4px; }
         
-        @media (max-width: 850px) { .modal-grid { grid-template-columns: 1fr; } .modal-details { padding: 35px; } .img-container { height: 250px; } }
+        @media (max-width: 850px) { .modal-grid { grid-template-columns: 1fr; } .modal-details { padding: 35px; } .img-container { height: 240px; } }
     </style>
 </head>
 <body>
@@ -286,7 +280,7 @@
     <div id="welcome-screen">
         <div class="vignette-overlay"></div>
         <div class="welcome-content">
-            <img id="main-brand-logo" src="image_0.png" alt="El Tío Martin Logo - Tours y Yates">
+            <img id="main-brand-logo" src="https://raw.githubusercontent.com/beamazingcolors/altiomartin/main/HRR.png" alt="El Tío Martin Logo - Tours y Yates">
             <span class="welcome-tag">Experiencias de Élite</span>
             <p class="welcome-subtitle">Navega por las aguas más exclusivas de Cancún & Riviera Maya a bordo de nuestra flota premium.</p>
             <button class="welcome-btn" onclick="startExperience()">Comenzar navegación</button>
@@ -319,7 +313,9 @@
 
     <script>
         const TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1kHXC7SHi1lC-_kTh9h8wbtPLPkpYB5jQ-eoF3Zcko92chHcX1LNW7gi6b5VGTXBIsvyJgITnFcFj/pub?output=tsv';
-        const GITHUB_RAW = 'https://raw.githubusercontent.com/beamazingcolors/amazingcolors/main/';
+        
+        // CONSTANTE GITHUB_RAW RECONFIGURADA PARA EL NUEVO REPOSITORIO DE DESTINO
+        const GITHUB_RAW = 'https://raw.githubusercontent.com/beamazingcolors/altiomartin/main/';
 
         let fullData = [];
         let isMainSiteActive = false;
@@ -376,7 +372,6 @@
                 if (!this.isMouse || this.alpha <= 0 || this.size <= 0.1) return;
                 ctx.save();
                 const gradient = ctx.createRadialGradient(this.x, this.y, 0.1, this.x, this.y, this.size);
-                // Estela blanca pura brillante
                 let colorBase = `rgba(255, 255, 255, `;
                 gradient.addColorStop(0, colorBase + `${this.alpha})`);
                 gradient.addColorStop(0.4, colorBase + `${this.alpha * 0.5})`);
