@@ -316,7 +316,7 @@
 
     <script>
         const TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1kHXC7SHi1lC-_kTh9h8wbtPLPkpYB5jQ-eoF3Zcko92chHcX1LNW7gi6b5VGTXBIsvyJgITnFcFj/pub?output=tsv';
-        const GITHUB_RAW = 'https://raw.githubusercontent.com/beamazingcolors/eltiomartin/main/';
+        const GITHUB_RAW = 'https://raw.githubusercontent.com/beamazingcolors/altiomartin/main/';
 
         let fullData = [];
         let isMainSiteActive = false;
@@ -458,7 +458,9 @@
                 let codigo = getCleanValue(item, ['Codigo', 'Código', 'CDG']);
                 let imgUrl = getImgUrlByCodigo(codigo);
                 let pies = getCleanValue(item, ['Pies', 'PIES']);
-                let precio = getCleanValue(item, ['Precio', 'PRECIO']) || 'Consultar Precio';
+                
+                // RECTIFICADO: DEJA EL ESPACIO COMPLETAMENTE VACÍO SI NO HAY PRECIO
+                let precio = getCleanValue(item, ['Precio', 'PRECIO']) || '';
                 
                 card.innerHTML = `
                     <div class="img-container">
@@ -478,7 +480,10 @@
             const item = fullData.find(i => getCleanValue(i, ['Nombre', 'NOMBRE']) === nombreBusqueda);
             const body = document.getElementById('modal-body');
             let nombre = getCleanValue(item, ['Nombre', 'NOMBRE']);
-            let precio = getCleanValue(item, ['Precio', 'PRECIO']) || 'Consultar Tarifa';
+            
+            // RECTIFICADO: DEJA EL ESPACIO COMPLETAMENTE VACÍO EN EL DETALLE ABIERTO
+            let precio = getCleanValue(item, ['Precio', 'PRECIO']) || '';
+            
             let desc = getCleanValue(item, ['Descriptivo', 'Detalles']) || 'Ficha técnica de navegación disponible mediante concierge.';
             let codigo = getCleanValue(item, ['Codigo', 'Código', 'CDG']);
             let imgUrl = getImgUrlByCodigo(codigo);
