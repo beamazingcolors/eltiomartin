@@ -76,11 +76,15 @@
             border-radius: 4px;
         }
 
+        /* CONFIGURACIÓN CRÍTICA PARA EL LOGO: ELIMINA EL FONDO BLANCO Y EL RECORTE */
         .welcome-content img {
-            width: 320px;
-            max-width: 80vw;
-            margin-bottom: 25px;
-            filter: drop-shadow(0 10px 20px rgba(4, 38, 58, 0.15));
+            width: 100%;
+            max-width: 420px;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto 25px auto;
+            mix-blend-mode: multiply; /* Vuelve transparente el fondo blanco del mapa/logo automáticamente */
         }
 
         .welcome-tag {
@@ -313,7 +317,9 @@
 
     <script>
         const TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1kHXC7SHi1lC-_kTh9h8wbtPLPkpYB5jQ-eoF3Zcko92chHcX1LNW7gi6b5VGTXBIsvyJgITnFcFj/pub?output=tsv';
-        const GITHUB_RAW = 'https://raw.githubusercontent.com/beamazingcolors/eltoniomartin/main/';
+        
+        // RUTA DE REPOSITORIO DE ORIGEN CORREGIDA CON EXACTITUD (eltiomartin)
+        const GITHUB_RAW = 'https://raw.githubusercontent.com/beamazingcolors/eltiomartin/main/';
 
         let fullData = [];
         let isMainSiteActive = false;
