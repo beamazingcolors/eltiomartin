@@ -244,7 +244,7 @@
         .modal-grid { display: grid; grid-template-columns: 1fr 1fr; }
         .modal-gallery { background: #01111a; min-height: 400px; overflow: hidden; display: flex; align-items: center; }
         
-        .modal-details { padding: 50px; color: var(--text-dark); background: var(--white); }
+        .modal-details { padding: 45px; color: var(--text-dark); background: var(--white); }
         .modal-title { font-family: 'Cinzel', serif; font-size: 2.4rem; color: var(--brand-navy); font-weight: 700; line-height: 1.2; margin-bottom: 5px; }
         
         .btn-wa { 
@@ -316,7 +316,7 @@
 
     <script>
         const TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1kHXC7SHi1lC-_kTh9h8wbtPLPkpYB5jQ-eoF3Zcko92chHcX1LNW7gi6b5VGTXBIsvyJgITnFcFj/pub?output=tsv';
-        const GITHUB_RAW = 'https://raw.githubusercontent.com/beamazingcolors/altiomartin/main/';
+        const GITHUB_RAW = 'https://raw.githubusercontent.com/beamazingcolors/eltiomartin/main/';
 
         let fullData = [];
         let isMainSiteActive = false;
@@ -334,7 +334,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        /* MOTOR DE RENDIMIENTO DE BRISA: PARTICULAS BLANCAS PURE */
+        /* MOTOR DE RENDIMIENTO DE BRISA */
         const canvas = document.getElementById('smokeCanvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -458,8 +458,6 @@
                 let codigo = getCleanValue(item, ['Codigo', 'Código', 'CDG']);
                 let imgUrl = getImgUrlByCodigo(codigo);
                 let pies = getCleanValue(item, ['Pies', 'PIES']);
-                
-                // RECTIFICADO: DEJA EL ESPACIO COMPLETAMENTE VACÍO SI NO HAY PRECIO
                 let precio = getCleanValue(item, ['Precio', 'PRECIO']) || '';
                 
                 card.innerHTML = `
@@ -480,13 +478,39 @@
             const item = fullData.find(i => getCleanValue(i, ['Nombre', 'NOMBRE']) === nombreBusqueda);
             const body = document.getElementById('modal-body');
             let nombre = getCleanValue(item, ['Nombre', 'NOMBRE']);
-            
-            // RECTIFICADO: DEJA EL ESPACIO COMPLETAMENTE VACÍO EN EL DETALLE ABIERTO
             let precio = getCleanValue(item, ['Precio', 'PRECIO']) || '';
-            
             let desc = getCleanValue(item, ['Descriptivo', 'Detalles']) || 'Ficha técnica de navegación disponible mediante concierge.';
             let codigo = getCleanValue(item, ['Codigo', 'Código', 'CDG']);
             let imgUrl = getImgUrlByCodigo(codigo);
+            
+            // EXTRACCIÓN EXTRA DE COLUMNAS NUEVAS EN TU GOOGLE SHEET
+            let duracion = getCleanValue(item, ['Duracion', 'DURACIÓN', 'Tiempo']);
+            let capacidad = getCleanValue(item, ['Capacidad', 'CAPACIDAD', 'Pasajeros', 'Capacidad de personas']);
+            let ubicacion = getCleanValue(item, ['Ubicacion', 'UBICACIÓN', 'Lugar', 'Destino']);
+            let incluye = getCleanValue(item, ['Incluye', 'INCLUYE', 'Incluye:']);
+
+            // Armar Micro-Ficha Técnica Dinámica
+            let specsHtml = '';
+            if (duracion || capacidad || ubicacion) {
+                specsHtml = `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 15px; margin: 20px 0; padding: 15px 0; border-top: 1px dashed rgba(179,143,79,0.3); border-bottom: 1px dashed rgba(179,143,79,0.3);">`;
+                if (duracion) specsHtml += `<div><span style="font-family:'Cinzel'; font-size:0.75rem; color:var(--accent-rope); font-weight:700; display:block; text-transform:uppercase; letter-spacing:1px;">Duración</span><span style="font-size:0.9rem; color:var(--brand-navy); font-weight:600;">${duracion}</span></div>`;
+                if (capacidad) specsHtml += `<div><span style="font-family:'Cinzel'; font-size:0.75rem; color:var(--accent-rope); font-weight:700; display:block; text-transform:uppercase; letter-spacing:1px;">Capacidad</span><span style="font-size:0.9rem; color:var(--brand-navy); font-weight:600;">${capacidad}</span></div>`;
+                if (ubicacion) specsHtml += `<div><span style="font-family:'Cinzel'; font-size:0.75rem; color:var(--accent-rope); font-weight:700; display:block; text-transform:uppercase; letter-spacing:1px;">Ubicación</span><span style="font-size:0.9rem; color:var(--brand-navy); font-weight:600;">${ubicacion}</span></div>`;
+                specsHtml += `</div>`;
+            }
+
+            // Armar Recuadro de Inclusiones Dinámico
+            let incluyeHtml = '';
+            if (incluye) {
+                incluyeHtml = `
+                    <div style="margin-top: 25px;">
+                        <span style="font-family:'Cinzel'; font-size:0.8rem; color:var(--brand-navy); font-weight:700; display:block; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">El viaje incluye</span>
+                        <div style="background: rgba(179, 143, 79, 0.05); border-left: 3px solid var(--accent-gold); padding: 15px 20px; font-size: 0.9rem; color: #3b424a; line-height: 1.6; border-radius: 0 4px 4px 0;">
+                            ${incluye}
+                        </div>
+                    </div>
+                `;
+            }
             
             body.innerHTML = `
                 <div class="modal-gallery">
@@ -494,8 +518,14 @@
                 </div>
                 <div class="modal-details">
                     <h1 class="modal-title">${nombre}</h1>
-                    <p class="card-price" style="font-size:1.6rem; border-bottom: 1px dashed rgba(179,143,79,0.3); padding-bottom:10px;">${precio}</p>
-                    <p style="font-size:0.95rem; color:#333; margin-top:20px; line-height:1.7; font-weight:400;">${desc}</p>
+                    ${precio ? `<p class="card-price" style="font-size:1.6rem; margin-bottom:10px;">${precio}</p>` : ''}
+                    
+                    ${specsHtml}
+                    
+                    <p style="font-size:0.95rem; color:#333; margin-top:15px; line-height:1.7; font-weight:400;">${desc}</p>
+                    
+                    ${incluyeHtml}
+                    
                     <a href="https://wa.me/529981230989" target="_blank" class="btn-wa">Reservar ahora</a>
                 </div>
             `;
